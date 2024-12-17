@@ -39,7 +39,7 @@ endif()
 
 #GPU build requires PGI for C compiler
 #Note that both pgcc and nvc report PGI
-if(ENABLE_GPU_BUILD AND NOT (CMAKE_C_COMPILER_ID MATCHES PGI))
+if(ENABLE_GPU_BUILD AND NOT (CMAKE_C_COMPILER_ID MATCHES "PGI|NVHPC"))
     message(STATUS "GPU build requires PGI compilers! Turning GPU build off.")
     set(ENABLE_GPU_BUILD OFF CACHE BOOL "build OpenACC GPU version" FORCE)
 endif()
@@ -56,12 +56,10 @@ if(ENABLE_GPU_BUILD)
                                       INTERFACE_COMPILE_OPTIONS
                                       $<$<NOT:$<COMPILE_LANGUAGE:CUDA>>:
                                       -acc
-                                      -ta=tesla:cc70$<$<CONFIG:Debug>:,time>
                                       -Minfo>)
     set_property(TARGET OpenACC_C PROPERTY
                                       INTERFACE_LINK_LIBRARIES
-                                      -acc
-                                      -ta=tesla:cc70)
+                                      -acc)
 endif()
 
 add_subdirectory(src)

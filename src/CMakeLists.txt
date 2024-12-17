@@ -124,9 +124,28 @@ install(TARGETS ${TRGT}         LIBRARY DESTINATION lib
 
 
 if(ENABLE_GPU_BUILD)
+    #OpenACC GPU build without CUDA support
+    set(TRGT BaryTree_gpu)
+    add_library(${TRGT} 
+                ${SRCS_TREEDRIVER} ${SRCS_KERNELS})
+
+    target_compile_definitions(${TRGT} PRIVATE 
+                                            OPENACC_ENABLED)
+    set_target_properties(     ${TRGT} PROPERTIES
+                                            POSITION_INDEPENDENT_CODE ON)
+    target_compile_features(   ${TRGT} PUBLIC
+                                            c_std_99)
+    target_link_libraries(     ${TRGT} PUBLIC
+                                            OpenMP::OpenMP_C
+                                            OpenACC_C
+                                            $<$<C_COMPILER_ID:GNU>:m>)
+
+    install(TARGETS            ${TRGT} LIBRARY DESTINATION lib
+                                        ARCHIVE DESTINATION lib)
+    
     #OpenACC GPU build with CUDA support
     if(ENABLE_CUDA_BUILD)
-        set(TRGT BaryTree_gpu)
+        set(TRGT BaryTree_gpu_cuda)
         add_library(${TRGT} 
                     ${SRCS_TREEDRIVER} ${SRCS_KERNELS} ${SRCS_CUDA_KERNELS})
  
@@ -143,26 +162,6 @@ if(ENABLE_GPU_BUILD)
                                              OpenACC_C
                                              $<$<C_COMPILER_ID:GNU>:m>
                                              -cudalib=cublas)
-
-        install(TARGETS            ${TRGT} LIBRARY DESTINATION lib
-                                           ARCHIVE DESTINATION lib)
-
-    #OpenACC GPU build without CUDA support
-    else()
-        set(TRGT BaryTree_gpu)
-        add_library(${TRGT} 
-                    ${SRCS_TREEDRIVER} ${SRCS_KERNELS})
-
-        target_compile_definitions(${TRGT} PRIVATE 
-                                             OPENACC_ENABLED)
-        set_target_properties(     ${TRGT} PROPERTIES
-                                             POSITION_INDEPENDENT_CODE ON)
-        target_compile_features(   ${TRGT} PUBLIC
-                                             c_std_99)
-        target_link_libraries(     ${TRGT} PUBLIC
-                                             OpenMP::OpenMP_C
-                                             OpenACC_C
-                                             $<$<C_COMPILER_ID:GNU>:m>)
 
         install(TARGETS            ${TRGT} LIBRARY DESTINATION lib
                                            ARCHIVE DESTINATION lib)
