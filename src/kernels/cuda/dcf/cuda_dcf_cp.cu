@@ -11,7 +11,7 @@ static void compute(double eta, int batch_num_sources, int batch_idx_start,
     double *source_x, double *source_y, double *source_z, double *source_q,
     double *cluster_x, double *cluster_y, double *cluster_z, double *cluster_q)
 {
-    printf("Hello DCF_CP thread %d, block %d\n", threadIdx.x, blockIdx.x);
+    // printf("Hello DCF_CP thread %d, block %d\n", threadIdx.x, blockIdx.x);
 }
 
 
@@ -25,7 +25,7 @@ void K_CUDA_DCF_CP_Lagrange(
 {
     double eta = run_params->kernel_params[0];
 
-    compute<<<1,32>>>(eta, batch_num_sources, batch_idx_start,
+    compute<<<1,1>>>(eta, batch_num_sources, batch_idx_start,
                       cluster_q_start, cluster_pts_start, interp_order_lim,
                       source_x,  source_y,  source_z,  source_q,
                       cluster_x, cluster_y, cluster_z, cluster_q);
