@@ -1,3 +1,7 @@
+Felipe notes:
+-------------
+Using the default options will build both gpu implementations (OpenACC and CUDA)
+
 Installing
 ----------
 
