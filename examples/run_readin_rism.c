@@ -24,22 +24,32 @@ int main(int argc, char **argv)
     printf("[random cube example] Beginning random cube example.\n");
 
     /* run parameters */
-    int N, run_direct, slice[3];
+    // N: Number of sources (e.g. The number atoms in the solute molecule)
+    int N; 
+    // run_direct: Flag to run direct sum and compare with treecode version
+    int run_direct; 
+    // slice: Will get slices of the grid to carry out calculation on a subset. 
+    // Use 1,1,1 to get full grid
+    int slice[3]; 
+    // xyz_limits: min, max pairs that defines the box size in x,y,z dimensions
     double xyz_limits[6];
+    // grid_dim: the number of grids on each dimension
     int grid_dim[3];
+    // grid_dd: grid spacing on each dimension
     double grid_dd[3];
+    // file_pqr: file containing coordinates and charge of each solute atom.
+    // Each line has the information: x, y, z, q
     char file_pqr[256];
     
     struct RunParams *run_params = NULL;
     
     FILE *fp = fopen(argv[1], "r");
     Params_Parse_Readin(fp, &run_params, &N, file_pqr, &run_direct, slice, xyz_limits, grid_dim);
-    
 
+    // Calculate grid spacing from the limits given
     grid_dd[0] = (xyz_limits[1] - xyz_limits[0]) / (grid_dim[0] - 1);
     grid_dd[1] = (xyz_limits[3] - xyz_limits[2]) / (grid_dim[1] - 1);
     grid_dd[2] = (xyz_limits[5] - xyz_limits[4]) / (grid_dim[2] - 1);
-
 
     /* data structures for BaryTree calculation and comparison */
     struct Particles *sources = NULL;
@@ -67,10 +77,13 @@ int main(int argc, char **argv)
 
 
     /* Setting up sources */
-    
+    // Allocate memory for source (solute) pointer
     sources = malloc(sizeof(struct Particles));
+
+    // Assign number of particles in the source (solute)
     sources->num = N;
 
+    // Allocating memory for x,y,z,q arrays containing N values
     make_vector(sources->x, sources->num);
     make_vector(sources->y, sources->num);
     make_vector(sources->z, sources->num);
@@ -78,6 +91,7 @@ int main(int argc, char **argv)
 
     FILE *points_fp = fopen(file_pqr, "r");
 
+    // Copy data coordinates and charges from file to source->x,y,z,q
     for (int i = 0; i < N; ++i) {
         fscanf(points_fp, "%lf %lf %lf %lf", &(sources->x[i]), &(sources->y[i]),
                                              &(sources->z[i]), &(sources->q[i]));
@@ -86,10 +100,13 @@ int main(int argc, char **argv)
 
     
     /* Setting up targets */
-    
+    // Allocate memory for target (grid) pointer
     targets = malloc(sizeof(struct Particles));
+
+    //Assigning total number of grid points
     targets->num = grid_dim[0] * grid_dim[1] * grid_dim[2];
     
+    // Assign xyz minimum and maximum values
     targets->xmin = xyz_limits[0];
     targets->ymin = xyz_limits[2];
     targets->zmin = xyz_limits[4];
@@ -98,10 +115,12 @@ int main(int argc, char **argv)
     targets->ymax = xyz_limits[3];
     targets->zmax = xyz_limits[5];
 
+    // Assign number of grid points in each dimension
     targets->xdim = grid_dim[0];
     targets->ydim = grid_dim[1];
     targets->zdim = grid_dim[2];
 
+    // Assign grid spacing
     targets->xdd = grid_dd[0];
     targets->ydd = grid_dd[1];
     targets->zdd = grid_dd[2];
@@ -110,11 +129,18 @@ int main(int argc, char **argv)
 
     /* Initializing direct and treedriver runs */
 
+    // Allocate memory for the potential: size of array
+    // is the total number of grid points
     potential = malloc(sizeof(double) * targets->num);
 
+    // If using slices of data, target_sample will store only
+    // these grid points
     targets_sample = malloc(sizeof(struct Particles));
+
+    // Allocate memory for potential obtained with direct sum
     potential_direct = malloc(sizeof(double) * targets->num);
 
+    // Set both potential variables to zero
     memset(potential, 0, targets->num * sizeof(double));
     memset(potential_direct, 0, targets->num * sizeof(double));
 
@@ -130,9 +156,10 @@ int main(int argc, char **argv)
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Running direct comparison
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+    // If running direct sum:
     if (run_direct == 1) {
 
+        // Setup target_sample struct's members by taking into account the slicing
         targets_sample->num = grid_dim[0]/slice[0] * grid_dim[1]/slice[1] * grid_dim[2]/slice[2];
         
         targets_sample->xmin = xyz_limits[0];
