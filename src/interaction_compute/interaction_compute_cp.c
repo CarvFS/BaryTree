@@ -255,7 +255,7 @@ void InteractionCompute_CP(double *potential, struct Tree *tree, struct Tree *ba
                     batch_num_sources, batch_idx_start,
                     source_x, source_y, source_z, source_q,
 
-                    run_params, potential, stream_id);
+                    potential, stream_id);
                 }
 #else
                 K_Coulomb_PP(

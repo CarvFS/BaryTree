@@ -65,7 +65,7 @@ void K_CUDA_Coulomb_PP(
     int target_x_dim_glob, int target_y_dim_glob, int target_z_dim_glob,
     int cluster_num_sources, int cluster_idx_start,
     double *source_x, double *source_y, double *source_z, double *source_q,
-    struct RunParams *run_params, double *potential, int gpu_async_stream_id)
+    double *potential, int gpu_async_stream_id)
 {
     // target_x_low_ind: Lower index of the target region in the x-dimension.
     // target_x_high_ind: Higher index of the target region in the x-dimension.
@@ -88,7 +88,6 @@ void K_CUDA_Coulomb_PP(
     // source_y: Array of y-coordinates of the source points.
     // source_z: Array of z-coordinates of the source points.
     // source_q: Array of charges of the source points.
-    // run_params: Pointer to the structure containing runtime parameters.
     // potential: Pointer to the array where the computed potential will be stored.
     // gpu_async_stream_id: ID of the GPU asynchronous stream to be used.
 

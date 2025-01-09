@@ -84,7 +84,7 @@ void InteractionCompute_Direct(double *potential,
             num_sources, 0,
             source_x, source_y, source_z, source_q,
 
-            run_params, potential, 0);
+            potential, 0);
         }
 #else
         K_Coulomb_PP(
