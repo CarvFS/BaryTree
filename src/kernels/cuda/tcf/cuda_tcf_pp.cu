@@ -75,11 +75,11 @@ void K_CUDA_TCF_PP(
     int target_x_dim_glob, int target_y_dim_glob, int target_z_dim_glob,
     int cluster_num_sources, int cluster_idx_start,
     double *source_x, double *source_y, double *source_z, double *source_q,
-    struct RunParams *run_params, double *potential, int gpu_async_stream_id)
+    double kap, double eta, double *potential, int gpu_async_stream_id)
 {
-    double kap = run_params->kernel_params[0];
-    double eta = run_params->kernel_params[1];
-    double kap_eta_2 = kap * eta / 2.0;
+    // kap: charge smearing parameter
+    // eta: contribution to the inverse Debye length of ionic co-solvent 
+    // All other parameters are the same as in the K_CUDA_Coulomb_PP function
 
     // Grid and block dimensions
     dim3 blockDim(8, 8, 8); // Adjust block size for your GPU's occupancy
