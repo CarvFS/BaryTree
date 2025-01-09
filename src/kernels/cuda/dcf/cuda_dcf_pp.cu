@@ -159,10 +159,10 @@ void K_CUDA_DCF_PP(
     int cluster_num_sources, int cluster_idx_start,
     double *source_x, double *source_y, double *source_z, double *source_q,
 
-    struct RunParams *run_params, double *potential, int gpu_async_stream_id)
+    double eta, double *potential, int gpu_async_stream_id)
 {
     // Extract parameter eta from run_params
-    double eta = run_params->kernel_params[0];
+    // double eta = run_params->kernel_params[0]; // Here we assume eta is the first parameter, but on coulomb it is the second parameter
 
     // Compute grid and block dimensions
     int x_range = target_x_high_ind - target_x_low_ind + 1;

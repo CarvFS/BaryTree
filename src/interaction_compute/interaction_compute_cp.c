@@ -229,6 +229,9 @@ void InteractionCompute_CP(double *potential, struct Tree *tree, struct Tree *ba
             double target_y_min = target_tree_y_min[node_index];
             double target_z_min = target_tree_z_min[node_index];
 
+            double kap = run_params->kernel_params[0]; // charge smearing parameter
+            double eta = run_params->kernel_params[1]; // contribution to the inverse Debye length of ionic co-solvent 
+
 
             int stream_id = j%3;
 
@@ -284,9 +287,7 @@ void InteractionCompute_CP(double *potential, struct Tree *tree, struct Tree *ba
                 #pragma acc host_data use_device(potential, \
                         source_x, source_y, source_z, source_q)
                 {
-                double kap = run_params->kernel_params[0]; // charge smearing parameter
-                double eta = run_params->kernel_params[1]; // contribution to the inverse Debye length of ionic co-solvent 
-
+                
                 K_CUDA_TCF_PP(
                     target_x_low_ind, target_x_high_ind,
                     target_y_low_ind, target_y_high_ind,
@@ -340,7 +341,7 @@ void InteractionCompute_CP(double *potential, struct Tree *tree, struct Tree *ba
                     batch_num_sources, batch_idx_start,
                     source_x, source_y, source_z, source_q,
 
-                    run_params, potential, stream_id);
+                    eta, potential, stream_id);
                 }
 #else
                 K_DCF_PP(

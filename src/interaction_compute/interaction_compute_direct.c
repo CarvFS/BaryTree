@@ -49,6 +49,10 @@ void InteractionCompute_Direct(double *potential,
     int target_ydim = targets->ydim; // number of grid points in y dimension
     int target_zdim = targets->zdim; // number of grid points in z dimension
 
+    // Define kap and eta variables here and pass them to the kernel, instead of passing run_params struct
+    double kap = run_params->kernel_params[0]; // charge smearing parameter
+    double eta = run_params->kernel_params[1]; // contribution to the inverse Debye length of ionic co-solvent 
+
 
 #ifdef OPENACC_ENABLED
     #pragma acc data copyin(source_x[0:num_sources], source_y[0:num_sources], \
@@ -113,10 +117,6 @@ void InteractionCompute_Direct(double *potential,
         #pragma acc host_data use_device(potential, \
                 source_x, source_y, source_z, source_q)
         {
-        // Define kap and eta variables here and pass them to the kernel, instead of passing run_params struct
-        double kap = run_params->kernel_params[0]; // charge smearing parameter
-        double eta = run_params->kernel_params[1]; // contribution to the inverse Debye length of ionic co-solvent 
-
         K_CUDA_TCF_PP(
             0,  target_xdim-1,
             0,  target_ydim-1,
@@ -170,7 +170,7 @@ void InteractionCompute_Direct(double *potential,
             num_sources, 0,
             source_x, source_y, source_z, source_q,
 
-            run_params, potential, 0);
+            eta, potential, 0); // pass kap instead of eta to get same results as current treecode implementation.
         }
 #else
         K_DCF_PP(
