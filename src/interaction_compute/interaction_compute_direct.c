@@ -27,25 +27,27 @@ void InteractionCompute_Direct(double *potential,
                                struct RunParams *run_params)
 {
 
-    int num_sources   = sources->num;
-    double *source_x  = sources->x;
-    double *source_y  = sources->y;
-    double *source_z  = sources->z;
-    double *source_q  = sources->q;
+    // define local variables and copy/point to 
+    // data on source (solute) and target (grid) structures
+    int num_sources   = sources->num; //number of solute atoms
+    double *source_x  = sources->x; // x coordinates of solute atoms
+    double *source_y  = sources->y; // y coordinates of solute atoms
+    double *source_z  = sources->z; // z coordinates of solute atoms
+    double *source_q  = sources->q; // charges of solute atoms
 
-    int num_targets   = targets->num;
+    int num_targets   = targets->num; // number of grid points
 
-    double target_xdd = targets->xdd;
-    double target_ydd = targets->ydd;
-    double target_zdd = targets->zdd;
+    double target_xdd = targets->xdd; // grid spacing in x dimension of grid points
+    double target_ydd = targets->ydd; // grid spacing in y dimension of grid points
+    double target_zdd = targets->zdd; // grid spacing in z dimension of grid points
 
-    double target_xmin = targets->xmin;
-    double target_ymin = targets->ymin;
-    double target_zmin = targets->zmin;
+    double target_xmin = targets->xmin; // minimum x coordinate of grid points
+    double target_ymin = targets->ymin; // minimum y coordinate of grid points
+    double target_zmin = targets->zmin; // minimum z coordinate of grid points
 
-    int target_xdim = targets->xdim;
-    int target_ydim = targets->ydim;
-    int target_zdim = targets->zdim;
+    int target_xdim = targets->xdim; // number of grid points in x dimension
+    int target_ydim = targets->ydim; // number of grid points in y dimension
+    int target_zdim = targets->zdim; // number of grid points in z dimension
 
 
 #ifdef OPENACC_ENABLED

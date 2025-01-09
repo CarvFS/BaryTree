@@ -67,6 +67,31 @@ void K_CUDA_Coulomb_PP(
     double *source_x, double *source_y, double *source_z, double *source_q,
     struct RunParams *run_params, double *potential, int gpu_async_stream_id)
 {
+    // target_x_low_ind: Lower index of the target region in the x-dimension.
+    // target_x_high_ind: Higher index of the target region in the x-dimension.
+    // target_y_low_ind: Lower index of the target region in the y-dimension.
+    // target_y_high_ind: Higher index of the target region in the y-dimension.
+    // target_z_low_ind: Lower index of the target region in the z-dimension.
+    // target_z_high_ind: Higher index of the target region in the z-dimension.
+    // target_xmin: Minimum x-coordinate of the target region.
+    // target_ymin: Minimum y-coordinate of the target region.
+    // target_zmin: Minimum z-coordinate of the target region.
+    // target_xdd: Grid spacing in the x-dimension for the target region.
+    // target_ydd: Grid spacing in the y-dimension for the target region.
+    // target_zdd: Grid spacing in the z-dimension for the target region.
+    // target_x_dim_glob: Global dimension in the x-dimension for the target region.
+    // target_y_dim_glob: Global dimension in the y-dimension for the target region.
+    // target_z_dim_glob: Global dimension in the z-dimension for the target region.
+    // cluster_num_sources: Number of source points in the cluster.
+    // cluster_idx_start: Starting index of the source points in the cluster.
+    // source_x: Array of x-coordinates of the source points.
+    // source_y: Array of y-coordinates of the source points.
+    // source_z: Array of z-coordinates of the source points.
+    // source_q: Array of charges of the source points.
+    // run_params: Pointer to the structure containing runtime parameters.
+    // potential: Pointer to the array where the computed potential will be stored.
+    // gpu_async_stream_id: ID of the GPU asynchronous stream to be used.
+
     // Grid and block dimensions
     dim3 blockDim(8, 8, 8); // Adjust block size for your GPU's occupancy
     dim3 gridDim(
