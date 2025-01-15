@@ -18,7 +18,12 @@
 
 #include "support_fns.h"
 
-
+/*
+In this example, running the direct code for comparing results is accumulating the
+values to the tree code version as well. Thus, the tree code result will be twice the
+value from the direct code. However, running without the direct code the correct value
+(without the factor of 2) is obtained.
+*/
 int main(int argc, char **argv)
 {
     printf("[random cube example] Beginning random cube example.\n");
@@ -198,7 +203,6 @@ int main(int argc, char **argv)
     START_TIMER(&time_run[2]);
     treedriver(sources, targets, run_params, potential, time_tree);
     STOP_TIMER(&time_run[2]);
-
     
     /* Ending total runtime timer */
     STOP_TIMER(&time_run[3]);
